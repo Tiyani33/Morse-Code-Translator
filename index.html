@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morse Code Translator | Advanced Communication Tool</title>
+    
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-light: #3b82f6;
+            --secondary-color: #7c3aed;
+            --dark-bg: #0f172a;
+            --darker-bg: #020617;
+            --card-bg: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #38bdf8;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        /* Particle Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--darker-bg);
+        }
+
+        /* Header */
+        .header {
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        .developer-tag {
+            padding: 0.5rem 1rem;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--primary-light), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+        }
+
+        /* Translator Card */
+        .translator-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .translator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .modern-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1.5rem;
+            background: rgba(2, 6, 23, 0.5);
+            border: 1px solid rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: var(--transition);
+        }
+
+        .modern-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+            background: rgba(2, 6, 23, 0.7);
+        }
+
+        .modern-textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .char-counter {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.7);
+            color: var(--text-primary);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.25rem;
+            color: var(--accent-color);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(2, 6, 23, 0.8);
+            border-top: 1px solid rgba(30, 41, 59, 0.5);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .translator-card {
+                padding: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+
+        /* Animation for buttons */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 37%,
+                rgba(255, 255, 255, 0.2) 45%,
+                rgba(255, 255, 255, 0) 50%
+            );
+            transform: rotate(30deg);
+            transition: all 0.3s;
+            opacity: 0;
+        }
+
+        .btn:hover::after {
+            animation: shine 1.5s ease-out infinite;
+            opacity: 1;
+        }
+
+        @keyframes shine {
+            0% { left: -50%; top: -50%; }
+            100% { left: 150%; top: 150%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle background -->
+    <div class="particles" id="particles-js"></div>
+    
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="material-icons">wifi_tethering</i>
+                </div>
+                <span>MorseWave</span>
+            </div>
+            <div class="developer-tag">
+                Designed by tiyani confidence Nyathi          </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="hero">
+            <h1>Morse Code Translator</h1>
+            <p>Convert between text and Morse code instantly with our powerful translation engine. Perfect for learning, communication, and cryptography applications.</p>
+        </section>
+
+        <section class="translator-card">
+            <div class="input-group">
+                <label class="input-label">
+                    <i class="material-icons">keyboard</i>
+                    Input Text or Morse Code
+                </label>
+                <div class="input-container">
+                    <textarea 
+                        id="msgInput" 
+                        class="modern-textarea" 
+                        placeholder="Type your message here... The system will automatically detect and convert between text and Morse code"
+                        oninput="MorseTranslator()"
+                    ></textarea>
+                    <div class="char-counter" id="charCounter">0 characters</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="clearAll()">
+                    <i class="material-icons">delete_sweep</i>
+                    Clear All
+                </button>
+                <button class="btn btn-secondary" onclick="copyOutput()">
+                    <i class="material-icons">content_copy</i>
+                    Copy Result
+                </button>
+                <button class="btn btn-secondary" onclick="swapContent()">
+                    <i class="material-icons">swap_vert</i>
+                    Swap
+                </button>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">
+                    <i class="material-icons">translate</i>
+                    Translated Output
+                </label>
+                <div class="input-container">
+                    <textarea 
+                        id="msgOutput" 
+                        class="modern-textarea" 
+                        readonly
+                        placeholder="Translation will appear here automatically..."
+                    ></textarea>
+                    <div class="char-counter" id="outputCounter">0 characters</div>
+                </div>
+            </div>
+
+            <div class="status-indicator" id="statusIndicator" style="display: none;">
+                <div class="status-dot"></div>
+                <span id="statusText">Ready for translation</span>
+            </div>
+        </section>
+
+        <section class="features-grid">
+            <div class="feature-card">
+                <i class="material-icons feature-icon">bolt</i>
+                <h3>Instant Conversion</h3>
+                <p>Real-time translation with intelligent format detection</p>
+            </div>
+            <div class="feature-card">
+                <i class="material-icons feature-icon">lock</i>
+                <h3>Secure Processing</h3>
+                <p>All translations happen in your browser for maximum privacy</p>
+            </div>
+            <div class="feature-card">
+                <i class="material-icons feature-icon">devices_other</i>
+                <h3>Cross-Platform</h3>
+                <p>Works perfectly on all devices and screen sizes</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <p>&copy; 2025 Tiyani confidence Nyathi| Software Developer & UX Designer</p>
+            </div>
+            <div class="footer-links">
+                <a href="mailto:tiyanieyc33@gmail.com">Contact</a>
+                <a href="https://linkedin.com/in/thefreelancer201">LinkedIn</a>
+                <a href="https://github.com/afzafri/Morse-Code-Translator">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Keep all existing JavaScript exactly the same -->
+    <script>
+        // Enhanced Morse Code Library
+        var morse = (function() {
+            var isSilent = true,
+                alpha = {
+                    A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.", G: "--.", H: "....", 
+                    I: "..", J: ".---", K: "-.-", L: ".-..", M: "--", N: "-.", O: "---", P: ".--.", 
+                    Q: "--.-", R: ".-.", S: "...", T: "-", U: "..-", V: "...-", W: ".--", 
+                    X: "-..-", Y: "-.--", Z: "--..", " ": "/",
+                    "1": ".----", "2": "..---", "3": "...--", "4": "....-", "5": ".....",
+                    "6": "-....", "7": "--...", "8": "---..", "9": "----.", "0": "-----",
+                    ".": ".-.-.-", ",": "--..--", "?": "..--..", "'": ".----.", "!": "-.-.--",
+                    "/": "-..-.", "(": "-.--.", ")": "-.--.-", "&": ".-...", ":": "---...",
+                    ";": "-.-.-.", "=": "-...-", "+": ".-.-.", "-": "-....-", "_": "..--.-",
+                    "\"": ".-..-.", "$": "...-..-", "@": ".--.-."
+                },
+                morseToAlpha = flipObject(alpha);
+
+            morseToAlpha["|"] = " ";
+
+            function flipObject(obj) {
+                var ret = {}, prop;
+                for (prop in obj) ret[obj[prop]] = prop;
+                return ret;
+            }
+
+            function encode(str) {
+                var ret = "", i = 0, len = str.length;
+                str = str.toUpperCase();
+                for (; i < len; i++) {
+                    if (alpha[str.charAt(i)]) {
+                        ret += " " + alpha[str.charAt(i)];
+                    } else if (!isSilent) {
+                        throw new Error("morse.encode: Can't handle " + str.charAt(i));
+                    }
+                }
+                return ret.slice(1);
+            }
+
+            function decode(str) {
+                var split = str.split(" "), ret = "", i = 0, len = split.length;
+                for (; i < len; i++) {
+                    if (morseToAlpha[split[i]]) {
+                        ret += morseToAlpha[split[i]];
+                    } else if (!isSilent) {
+                        throw new Error("morse.decode: Can't handle " + split[i]);
+                    }
+                }
+                return ret;
+            }
+
+            return {
+                encode: encode,
+                decode: decode,
+                silent: function() { isSilent = !!arguments.length; }
+            };
+        })();
+
+        // Enhanced Translation Function
+        function MorseTranslator() {
+            var msgInput = document.getElementById("msgInput");
+            var msgOutput = document.getElementById("msgOutput");
+            var statusIndicator = document.getElementById("statusIndicator");
+            var statusText = document.getElementById("statusText");
+
+            if (!msgInput.value.trim()) {
+                msgOutput.value = "";
+                statusIndicator.style.display = "none";
+                updateCharCounters();
+                return;
+            }
+
+            statusIndicator.style.display = "flex";
+
+            try {
+                if (isMorseCode(msgInput.value)) {
+                    var decoded = morse.decode(msgInput.value);
+                    msgOutput.value = decoded;
+                    statusText.textContent = "Morse code decoded successfully";
+                } else {
+                    var encoded = morse.encode(msgInput.value);
+                    msgOutput.value = encoded;
+                    statusText.textContent = "Text encoded to Morse code";
+                }
+            } catch (error) {
+                msgOutput.value = "Translation error: " + error.message;
+                statusText.textContent = "Translation error occurred";
+            }
+
+            updateCharCounters();
+        }
+
+        function isMorseCode(str) {
+            var morseChars = ['/', '-', '.', ' '];
+            for (var i = 0; i < str.length; i++) {
+                if (morseChars.indexOf(str.charAt(i)) === -1) {
+                    return false;
+                }
+            }
+            return str.trim().length > 0;
+        }
+
+        function updateCharCounters() {
+            var msgInput = document.getElementById("msgInput");
+            var msgOutput = document.getElementById("msgOutput");
+            document.getElementById("charCounter").textContent = msgInput.value.length + " characters";
+            document.getElementById("outputCounter").textContent = msgOutput.value.length + " characters";
+        }
+
+        function clearAll() {
+            document.getElementById("msgInput").value = "";
+            document.getElementById("msgOutput").value = "";
+            document.getElementById("statusIndicator").style.display = "none";
+            updateCharCounters();
+            document.getElementById("msgInput").focus();
+        }
+
+        function copyOutput() {
+            var msgOutput = document.getElementById("msgOutput");
+            if (msgOutput.value) {
+                msgOutput.select();
+                document.execCommand("copy");
+                
+                // Visual feedback
+                var btn = event.target.closest('.btn');
+                var originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="material-icons">check</i>Copied!';
+                btn.style.background = "var(--success-color)";
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = "";
+                }, 2000);
+            }
+        }
+
+        function swapContent() {
+            var msgInput = document.getElementById("msgInput");
+            var msgOutput = document.getElementById("msgOutput");
+            
+            var temp = msgInput.value;
+            msgInput.value = msgOutput.value;
+            msgOutput.value = temp;
+            
+            MorseTranslator();
+        }
+
+        // Initialize
+        document.addEventListener("DOMContentLoaded", function() {
+            updateCharCounters();
+            document.getElementById("msgInput").focus();
+        });
+
+        // Add input event listener for character counting
+        document.getElementById("msgInput").addEventListener("input", updateCharCounters);
+    </script>
+</body>
+</html>
